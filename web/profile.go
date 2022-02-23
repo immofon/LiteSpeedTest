@@ -218,6 +218,7 @@ func (p *OutputMessageWriter) WriteMessage(messageType int, data []byte) error {
 }
 
 type Result struct {
+	Name     string
 	Link     string
 	Protocol string
 	Ping     int
@@ -428,6 +429,7 @@ func (p *ProfileTest) testOne(ctx context.Context, index int, link string, nodeC
 		nodeChan <- node
 		if p.Result != nil {
 			p.Result <- Result{
+				Name:     remarks,
 				Link:     link,
 				Protocol: protocol,
 				Ping:     int(elapse),
