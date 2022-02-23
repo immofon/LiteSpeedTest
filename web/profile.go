@@ -217,8 +217,17 @@ func (p *OutputMessageWriter) WriteMessage(messageType int, data []byte) error {
 	return nil
 }
 
+type Result struct {
+	Link     string
+	Protocol string
+	Ping     int
+	AvgSpeed int
+	MaxSpeed int
+}
+
 type ProfileTest struct {
 	Writer      MessageWriter
+	Result      chan Result
 	Options     *ProfileTestOptions
 	MessageType int
 	Links       []string
@@ -417,6 +426,15 @@ func (p *ProfileTest) testOne(ctx context.Context, index int, link string, nodeC
 			Traffic:  sum,
 		}
 		nodeChan <- node
+		if p.Result != nil {
+			p.Result <- Result{
+				Link:     link,
+				Protocol: protocol,
+				Ping:     int(elapse),
+				AvgSpeed: int(avg),
+				MaxSpeed: int(max),
+			}
+		}
 	}(ch, startCh)
 	speed, err := download.Download(link, p.Options.Timeout, p.Options.Timeout, ch, startCh)
 	// speed, err := download.DownloadRange(link, 2, p.Options.Timeout, p.Options.Timeout, ch, startCh)

@@ -2,3 +2,4 @@ lite
 web/main.wasm
 web/render/*.png
 .vscode/
+**/*.wasm

@@ -92,7 +92,7 @@ func readConfig(configPath string) (*ProfileTestOptions, error) {
 	return options, nil
 }
 
-func TestFromCMD(subscription string, configPath *string) error {
+func TestFromCMD(subscription string, configPath *string, results chan Result) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	options := ProfileTestOptions{
@@ -100,7 +100,7 @@ func TestFromCMD(subscription string, configPath *string) error {
 		SpeedTestMode: "all",
 		PingMethod:    "googleping",
 		SortMethod:    "rspeed",
-		Concurrency:   2,
+		Concurrency:   4,
 		TestMode:      2,
 		Subscription:  subscription,
 		Language:      "en",
@@ -125,6 +125,7 @@ func TestFromCMD(subscription string, configPath *string) error {
 	outputMessageWriter := OutputMessageWriter{}
 	p := ProfileTest{
 		Writer:      &outputMessageWriter,
+		Result:      results,
 		MessageType: 1,
 		Links:       links,
 		Options:     &options,
