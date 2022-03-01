@@ -41,7 +41,7 @@ func client() {
 	go func() {
 		for r := range results {
 			log.Printf("%s %d %d\n", r.Name, r.AvgSpeed, r.MaxSpeed)
-			if strings.Contains(r.Name, "中国") {
+			if strings.Contains(r.Name, "中国") || strings.HasPrefix(r.Name, "CN") {
 				continue
 			}
 
@@ -101,9 +101,9 @@ func server() {
 		defer mu.Unlock()
 
 		for i, node := range nodes {
-			fmt.Fprintf(w, "%d:%s ping:%d avg-speed:%s, max-speed:%s\n", i+1, node.Name, node.Ping,
-				datasize.ByteSize(node.AvgSpeed).HumanReadable(),
-				datasize.ByteSize(node.MaxSpeed).HumanReadable())
+			fmt.Fprintf(w, "%d:%s ping:%d avg-speed:%s/s, max-speed:%s/s\n\n", i+1, node.Name, node.Ping,
+				datasize.ByteSize(node.AvgSpeed/8).HumanReadable(),
+				datasize.ByteSize(node.MaxSpeed/8).HumanReadable())
 		}
 	})
 
@@ -150,6 +150,9 @@ func server() {
 			now := time.Now()
 			sort.SliceStable(nodes, func(i, j int) bool {
 				if now.Sub(nodes[j].AddedAt) > 15*time.Minute {
+					if now.Sub(nodes[i].AddedAt) > 15*time.Minute {
+						return nodes[i].AvgSpeed > nodes[j].AvgSpeed
+					}
 					return true
 				}
 				return nodes[i].AvgSpeed > nodes[j].AvgSpeed

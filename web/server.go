@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"time"
 
@@ -122,6 +123,10 @@ func TestFromCMD(subscription string, configPath *string, results chan Result) e
 	if err != nil {
 		return err
 	}
+	rand.Shuffle(len(links), func(i, j int) {
+		links[i], links[j] = links[j], links[i]
+	})
+
 	outputMessageWriter := OutputMessageWriter{}
 	p := ProfileTest{
 		Writer:      &outputMessageWriter,

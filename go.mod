@@ -19,6 +19,7 @@ require (
 
 require (
 	github.com/c2h5oh/datasize v0.0.0-20200825124411-48ed595a09d2 // indirect
+	github.com/docker/go-units v0.4.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	golang.org/x/mod v0.5.1 // indirect
 	golang.org/x/text v0.3.7 // indirect
